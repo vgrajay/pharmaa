@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pharmacy Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body onload="loadMedicines()">
+
+<div class="container">
+
+    <h1>💊 Pharmacy Management System</h1>
+
+    <!-- ================= DASHBOARD STATS ================= -->
+    <div class="stats">
+        <div class="card">
+            <h3>Total Medicines</h3>
+            <p id="totalMed">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Companies</h3>
+            <p id="totalCompany">0</p>
+        </div>
+
+        <div class="card">
+            <h3>Total Quantity</h3>
+            <p id="totalQty">0</p>
+        </div>
+    </div>
+
+    <!-- ================= MEDICINE TABLE ================= -->
+    <div class="section">
+        <h2>Available Medicines</h2>
+        <button onclick="loadMedicines()">Refresh</button>
+        
+        <!-- NEW: Delete All Expired button - hidden by default -->
+        <button id="deleteAllExpiredBtn" onclick="deleteAllExpired()" class="secondary hidden">
+            Delete All Expired
+        </button>
+
+        <table id="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Expiry</th>
+                <th>Company</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Filled by JS -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ================= ADMIN LOGIN ================= -->
+    <div class="section" id="loginBox">
+        <h2>🔐 Admin Login</h2>
+
+        <input id="user" placeholder="Username">
+        <input id="pass" type="password" placeholder="Password">
+
+        <button onclick="login()">Login</button>
+    </div>
+
+    <!-- ================= ADMIN PANEL ================= -->
+    <div class="section hidden admin" id="adminPanel">
+        <h2>🛠 Admin Panel</h2>
+
+        <!-- Medicine search box with datalist -->
+        <input id="medSelect" list="medicineList" placeholder="Search Medicine" onchange="autoFillPrice()">
+
+        <datalist id="medicineList">
+            <option value="Paracetamol">
+            <option value="Pantoprazole">
+            <option value="Amoxicillin">
+            <option value="Azithromycin">
+            <option value="Cetirizine">
+            <option value="Vitamin C">
+            <option value="Ibuprofen">
+            <option value="Metformin">
+
+            <option value="Amlodipine">
+            <option value="Losartan">
+            <option value="Atorvastatin">
+            <option value="Simvastatin">
+            <option value="Clopidogrel">
+            <option value="Atenolol">
+            <option value="Ramipril">
+            <option value="Telmisartan">
+
+            <option value="Doxycycline">
+            <option value="Ciprofloxacin">
+            <option value="Cephalexin">
+            <option value="Levofloxacin">
+            <option value="Clarithromycin">
+            <option value="Doxycycline SR">
+            <option value="Amoxiclav">
+            <option value="Nitrofurantoin">
+
+            <option value="Loratadine">
+            <option value="Fexofenadine">
+            <option value="Levocetirizine">
+            <option value="Montelukast">
+            <option value="Hydroxyzine">
+            <option value="Chlorphenamine">
+            <option value="Desloratadine">
+            <option value="Ranitidine">
+
+            <option value="Omeprazole">
+            <option value="Rabeprazole">
+            <option value="Esomeprazole">
+            <option value="Domperidone">
+            <option value="Ondansetron">
+            <option value="Dicyclomine">
+            <option value="Hydroxide Antacid">
+            <option value="Sucralfate">
+
+            <option value="Gliclazide">
+            <option value="Glimepiride">
+            <option value="Sitagliptin">
+            <option value="Vildagliptin">
+            <option value="Insulin Regular">
+            <option value="Insulin NPH">
+            <option value="Pioglitazone">
+            <option value="Acarbose">
+
+            <option value="Salbutamol Inhaler">
+            <option value="Budesonide Inhaler">
+            <option value="Ipratropium Inhaler">
+            <option value="Theophylline">
+            <option value="Montelukast-LC">
+            <option value="Tiotropium">
+            <option value="Formoterol-Budesonide">
+            <option value="Levosalbutamol">
+
+            <option value="Diclofenac">
+            <option value="Naproxen">
+            <option value="Aceclofenac">
+            <option value="Meloxicam">
+            <option value="Piroxicam">
+            <option value="Tramadol">
+            <option value="Pregabalin">
+            <option value="Gabapentin">
+
+            <option value="Sertraline">
+            <option value="Escitalopram">
+            <option value="Fluoxetine">
+            <option value="Amitriptyline">
+            <option value="Olanzapine">
+            <option value="Risperidone">
+            <option value="Clonazepam">
+            <option value="Alprazolam">
+
+            <option value="Levothyroxine 25mcg">
+            <option value="Levothyroxine 50mcg">
+            <option value="Levothyroxine 100mcg">
+            <option value="Carbimazole">
+            <option value="Calcitriol">
+            <option value="Vitamin D3">
+            <option value="Calcium Carbonate">
+            <option value="Calcium with D3">
+
+            <option value="Iron Folic Acid">
+            <option value="Multivitamin Tablet">
+            <option value="Vitamin B Complex">
+            <option value="Zinc Tablet">
+            <option value="Folic Acid">
+            <option value="Vitamin B12">
+            <option value="L-ornithine L-aspartate">
+            <option value="Protein Powder">
+
+            <option value="Furosemide">
+            <option value="Spironolactone">
+            <option value="Hydrochlorothiazide">
+            <option value="Torsemide">
+            <option value="Isosorbide Mononitrate">
+            <option value="Digoxin">
+            <option value="Warfarin">
+            <option value="Enoxaparin">
+        </datalist>
+
+        <!-- Company with 60 options -->
+        <input id="company" list="companyList" placeholder="Company Name">
+
+        <datalist id="companyList">
+            <!-- Global big pharma -->
+            <option value="Pfizer">
+            <option value="Johnson & Johnson">
+            <option value="Novartis">
+            <option value="Roche">
+            <option value="Merck & Co.">
+            <option value="GlaxoSmithKline (GSK)">
+            <option value="AstraZeneca">
+            <option value="Sanofi">
+            <option value="AbbVie">
+            <option value="Bristol Myers Squibb">
+            <option value="Eli Lilly">
+            <option value="Novo Nordisk">
+            <option value="Bayer">
+            <option value="Takeda">
+            <option value="Amgen">
+            <option value="Gilead Sciences">
+            <option value="Teva Pharmaceutical">
+            <option value="Viatris">
+            <option value="Boiron">
+            <option value="Sandoz">
+
+            <!-- Indian / generic focused -->
+            <option value="Cipla">
+            <option value="Sun Pharma">
+            <option value="Dr. Reddy's Laboratories">
+            <option value="Lupin">
+            <option value="Torrent Pharma">
+            <option value="Zydus Lifesciences">
+            <option value="Alkem Laboratories">
+            <option value="Mankind Pharma">
+            <option value="Glenmark Pharma">
+            <option value="Intas Pharmaceuticals">
+            <option value="Aurobindo Pharma">
+            <option value="Hetero Drugs">
+            <option value="Biocon">
+            <option value="Natco Pharma">
+            <option value="Wockhardt">
+            <option value="Cadila Pharmaceuticals">
+            <option value="USV Pvt Ltd">
+            <option value="Micro Labs">
+            <option value="Emcure Pharmaceuticals">
+            <option value="Laurus Labs">
+
+            <!-- Additional recognisable names -->
+            <option value="Ipsen">
+            <option value="UCB Pharma">
+            <option value="Biogen">
+            <option value="Fresenius Kabi">
+            <option value="Mallinckrodt">
+            <option value="Hikma Pharmaceuticals">
+            <option value="STADA Arzneimittel">
+            <option value="Grifols">
+            <option value="CSL Behring">
+            <option value="Servier">
+        </datalist>
+
+        <input id="id" placeholder="Medicine ID">
+        <input id="price" placeholder="Price">
+        <input id="qty" placeholder="Quantity">
+        <input type="date" id="expiry" placeholder="Expiry Date (YYYY-MM-DD)">
+
+        <button onclick="addMedicine()">Add Medicine</button>
+        <button onclick="loadExpired()" class="secondary">View Expired</button>
+        <button onclick="logout()" class="secondary">Logout</button>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

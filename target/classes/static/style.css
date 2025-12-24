@@ -1,0 +1,170 @@
+
+
+/* =========================
+   BASE LAYOUT
+========================= */
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 1000px;
+    margin: auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* =========================
+   INPUTS & BUTTONS
+========================= */
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 6px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    padding: 8px 14px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background: #3498db;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #2980b9;
+}
+
+button.secondary {
+    background: #555;
+}
+
+button.secondary:hover {
+    background: #333;
+}
+
+/* =========================
+   DASHBOARD STATS (CARDS)
+========================= */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 20px 0;
+}
+
+/* IMPORTANT: use .card in HTML */
+.card {
+    background: linear-gradient(135deg, #2196f3, #42a5f5);
+    color: white;
+    padding: 12px 10px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 5px 14px rgba(0,0,0,0.12);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.18);
+}
+
+.card h3 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0.95;
+}
+
+.card p {
+    margin-top: 6px;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+/* =========================
+   TABLE
+========================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: white;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+
+th {
+    background: #3498db;
+    color: white;
+}
+
+/* =========================
+   SECTIONS (LOGIN / ADMIN)
+========================= */
+.section {
+    background: white;
+    padding: 16px;
+    margin-top: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.hidden {
+    display: none;
+}
+
+.admin {
+    background: #eef9f1;
+}
+
+/* =========================
+   DELETE BUTTON
+========================= */
+.del-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.del-btn:hover {
+    background: #c0392b;
+}
+
+.del-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+@media (max-width: 768px) {
+    .stats {
+        grid-template-columns: 1fr;
+    }
+}
