@@ -157,8 +157,27 @@ function updateStats(data) {
   document.getElementById("totalQty").innerText =
     formatCount(totalQty);
 }
+/* =======================
+  Logout function
+======================= */
+function logout() {
+  // optional: call backend logout if available
+  fetch(API + "/admin/logout", {
+    method: "POST",
+    credentials: "include"
+  }).catch(() => {
+    // ignore errors; still clear frontend state
+  });
 
+  isAdmin = false;
 
+  // hide admin panel, show login
+  document.getElementById("adminPanel").classList.add("hidden");
+  document.getElementById("loginBox").classList.remove("hidden");
+
+  // reload normal medicines list
+  loadMedicines();
+}
 /* =======================
    TABLE RENDER
 ======================= */
@@ -429,3 +448,4 @@ window.onload = () => {
     sel.appendChild(opt);
   });
 };
+
