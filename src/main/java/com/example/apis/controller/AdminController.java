@@ -13,7 +13,7 @@ public class AdminController {
             @RequestParam String u,
             @RequestParam String p) {
 
-        if ("admin".equals(u) && "admin123".equals(p)) {
+        if ("admin".equals(u) && "admin".equals(p)) {
             return ResponseEntity.ok("OK");
         }
         return ResponseEntity.status(401).body("Invalid login");

@@ -1,6 +1,6 @@
 const API = "http://localhost:8081/api";
 let isAdmin = false;
-
+let lastExpiredList = []; // <== added to track expired list
 
 /* =======================
    MEDICINE MASTER (JSON)
@@ -115,7 +115,6 @@ const medicineMaster = [
   { "name": "Enoxaparin", "price": 360 }
 ];
 
-
 /* =======================
    FORMAT COUNT (K/L/M/B)
 ======================= */
@@ -127,6 +126,15 @@ function formatCount(num) {
   return num;
 }
 
+/* =======================
+   SCROLL HELPER
+======================= */
+function scrollTableTop() {
+  const table = document.getElementById("table");
+  if (table) {
+    table.scrollIntoView({ behavior: "smooth", block: "start" }); // keeps table in view[web:13]
+  }
+}
 
 /* =======================
    LOAD MEDICINES
@@ -137,9 +145,12 @@ function loadMedicines() {
     .then(data => {
       showTable(data);
       updateStats(data);
+      lastExpiredList = []; // reset when showing all
+      const deleteBtn = document.getElementById("deleteAllExpiredBtn");
+      deleteBtn.classList.add("hidden"); // hide delete-all when not in expired view
+      scrollTableTop();
     });
 }
-
 
 /* =======================
    UPDATE DASHBOARD
@@ -157,7 +168,6 @@ function updateStats(data) {
   document.getElementById("totalQty").innerText =
     formatCount(totalQty);
 }
-
 
 /* =======================
    TABLE RENDER
@@ -185,7 +195,6 @@ function showTable(data) {
   });
 }
 
-
 /* =======================
    ADMIN LOGIN
 ======================= */
@@ -206,7 +215,6 @@ function login() {
     });
 }
 
-
 /* =======================
    AUTO FILL PRICE (JSON)
 ======================= */
@@ -215,7 +223,6 @@ function autoFillPrice() {
   const med = medicineMaster.find(m => m.name === sel);
   document.getElementById("price").value = med ? med.price : "";
 }
-
 
 /* =======================
    ADD / MERGE MEDICINE
@@ -306,7 +313,6 @@ function addMedicine() {
     });
 }
 
-
 /* =======================
    DELETE
 ======================= */
@@ -328,8 +334,6 @@ function deleteMedicine(id) {
   .catch(() => alert("Delete failed — still logged in"));
 }
 
-
-
 /* =======================
    CLEAR INPUTS
 ======================= */
@@ -341,7 +345,6 @@ function clearInputs() {
   document.getElementById("expiry").value = "";
   document.getElementById("company").value = "";
 }
-
 
 /* =======================
    VIEW EXPIRED MEDICINES
@@ -356,8 +359,7 @@ function loadExpired() {
     .then(res => res.json())
     .then(data => {
       lastExpiredList = data;  // store expired items
-      
-      // ✅ SHOW delete button when expired medicines exist
+
       const deleteBtn = document.getElementById("deleteAllExpiredBtn");
       if (data.length > 0) {
         deleteBtn.classList.remove("hidden");
@@ -365,9 +367,10 @@ function loadExpired() {
         deleteBtn.classList.add("hidden");
         alert("No expired medicines found");
       }
-      
+
       showTable(data);
       updateStats(data);
+      scrollTableTop();
     })
     .catch(err => {
       console.error(err);
@@ -375,6 +378,9 @@ function loadExpired() {
     });
 }
 
+/* =======================
+   DELETE ALL EXPIRED
+======================= */
 function deleteAllExpired() {
   if (!isAdmin) {
     alert("Admin login required");
@@ -396,41 +402,63 @@ function deleteAllExpired() {
         method: "DELETE",
         credentials: "include"
       })
+        .then(res => ({
+          id,
+          ok: res.ok,
+          status: res.status
+        }))
+        .catch(err => ({
+          id,
+          ok: false,
+          status: 0,
+          error: err
+        }))
     )
   )
-    .then(responses => {
-      const allOk = responses.every(r => r.ok);
-      if (!allOk) throw new Error("Some deletes failed");
-      alert("All expired medicines deleted");
+    .then(results => {
+      const failed = results.filter(r => !r.ok && r.status !== 404);
+      const notFound = results.filter(r => r.status === 404);
+
+      if (failed.length > 0) {
+        console.error("Failed to delete IDs:", failed);
+        alert("Some expired medicines could not be deleted. Check console for failed IDs.");
+      } else {
+        // Treat 404 as 'already deleted', so all good if only 200/204/404
+        alert("All expired medicines deleted (including already-removed ones).");
+      }
+
+      console.log("Not found (already deleted) IDs:", notFound);
+
       lastExpiredList = [];
-      loadMedicines(); // back to full list
+      const deleteBtn = document.getElementById("deleteAllExpiredBtn");
+      deleteBtn.classList.add("hidden");
+      loadMedicines(); // reload full list
     })
     .catch(err => {
-      console.error(err);
-      alert("Delete all expired Iteam");
+      console.error("Delete all expired error:", err);
+      alert("Delete all expired failed");
     });
 }
 
+
+
+/* =======================
+   LOGOUT
+======================= */
 function logout() {
-  // optional: call backend logout if available
   fetch(API + "/admin/logout", {
     method: "POST",
     credentials: "include"
-  }).catch(() => {
-    // ignore errors; still clear frontend state
-  });
+  }).catch(() => {});
 
   isAdmin = false;
-
-  // hide admin panel, show login
+document.getElementById("user").value = "";
+  document.getElementById("pass").value = "";
   document.getElementById("adminPanel").classList.add("hidden");
   document.getElementById("loginBox").classList.remove("hidden");
 
-  // reload normal medicines list
   loadMedicines();
 }
-
-
 
 /* =======================
    INIT
